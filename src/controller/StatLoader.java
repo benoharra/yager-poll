@@ -3,6 +3,7 @@ package controller;
 import parser.PreviousWeek;
 import parser.CurrentWeek;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
@@ -11,16 +12,16 @@ import model.Team;
 import model.TeamResult;
 
 public class StatLoader {
-    ArrayList<Team> teams;
+    List<Team> teams;
 	String errorMessage;
 	
 	public StatLoader(){
 		teams = new ArrayList<>();
 	}
 
-	public boolean load() throws Exception {
+	public boolean load() throws IOException  {
 		PreviousWeek baseTeamData = new PreviousWeek();
-		ArrayList<Team> baseTeams = baseTeamData.readInput();
+		List<Team> baseTeams = baseTeamData.readInput();
 		CurrentWeek weekData = new CurrentWeek();
 		List<TeamResult> results = weekData.readInput();
 		for(Team team : baseTeams){
@@ -45,7 +46,7 @@ public class StatLoader {
 	}
 	
 	private Team addTeamData(Team team, TeamResult result){
-		ArrayList<String> opponents = team.getTeamsPlayed();
+		List<String> opponents = team.getTeamsPlayed();
 		String teamPlayed = result.getOpponent();
 		if(teamPlayed != null){
 			opponents.add(result.getOpponent());
@@ -70,7 +71,7 @@ public class StatLoader {
 		return team;
 	}
 	
-	public ArrayList<Team> getTeams(){
+	public List<Team> getTeams(){
 		return this.teams;
 	}
 	

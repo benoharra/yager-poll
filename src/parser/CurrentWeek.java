@@ -17,11 +17,12 @@ public class CurrentWeek {
 	
 	private String filePath = ErrorPage.dirHome + "CurrentWeek.csv";
 
-	public List<TeamResult> readInput() throws Exception {
+	public List<TeamResult> readInput() throws IOException {
 		File file = new File(filePath);
 		try {
 			CSVParser parser = CSVParser.parse(file, Charset.defaultCharset(), CSVFormat.EXCEL);
 			List<CSVRecord> records = parser.getRecords();
+			// Remove header row
 			records.remove(0);
 			return records.stream().map(CurrentWeek::buildResult).collect(Collectors.toList());
 		} catch (IOException e) {

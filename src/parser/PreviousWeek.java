@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
@@ -13,13 +14,10 @@ import controller.ErrorPage;
 import model.Team;
 
 public class PreviousWeek {
-	String filePath = ErrorPage.dirHome + "PreviousWeek.csv";
 
-	public PreviousWeek(){
-		
-	}
-	
-	public ArrayList<Team> readInput(){
+	private String filePath = ErrorPage.dirHome + "PreviousWeek.csv";
+
+	public List<Team> readInput(){
 		File file = new File(filePath);
 		ArrayList<Team> teams = new ArrayList<>();
 		try {
@@ -55,12 +53,12 @@ public class PreviousWeek {
 		return wins + losses;
 	}
 	
-	private ArrayList<String> getTeamsPlayed(String teamList){
+	private List<String> getTeamsPlayed(String teamList){
 		ArrayList<String> teams = new ArrayList<>();
 		while(teamList.contains(";")){
 			String team = teamList.substring(0,teamList.indexOf(";")).toLowerCase();
 			teams.add(team);
-			teamList = teamList.substring(teamList.indexOf(";") + 1, teamList.length());
+			teamList = teamList.substring(teamList.indexOf(";") + 1);
 		}
 		teams.add(teamList.toLowerCase());
 		return teams;

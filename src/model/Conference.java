@@ -7,18 +7,13 @@ import java.util.List;
 import controller.ErrorPage;
 
 public class Conference {
-	private List<Integer> ranks;
+	private List<Integer> ranks = new ArrayList<>();
 	private float average;
 	private float top;
 	private float bottom;
 	private float strength;
-	private List<Float> strengthOfSchedules;
+	private List<Float> strengthOfSchedules = new ArrayList<>();
 	private float strengthOfSchedule;
-
-	public Conference() {
-		ranks = new ArrayList<>();
-		strengthOfSchedules = new ArrayList<>();
-	}
 
 	public List<Integer> getRanks() {
 		return ranks;

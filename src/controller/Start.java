@@ -2,6 +2,7 @@ package controller;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 import model.Team;
 
@@ -11,24 +12,22 @@ public class Start {
 		StatLoader stats = new StatLoader();
 		try {
 			if(stats.load()) {
-				Rank.execute(AdjustStats.calculate(stats.getTeams()));
+				calculateRanking(stats.getTeams());
 			} else {
-				
+				// Adjust this to be in catch block
+				ErrorPage.writeError(stats.getErrorMessage());
 			}
 
+		} catch (IllegalArgumentException | IOException e) {
+			ErrorPage.writeError("Calculation Error: " + e.toString());
+		} finally {
+			ErrorPage.close();
 		}
-		ArrayList<Team> teams;
-		if (loaded) {
-			try {
-				teams = AdjustStats.calculate(stats.getTeams());
-				Rank.execute(teams);
-			} catch (IllegalArgumentException | IOException e) {
-				ErrorPage.writeError("Calculation Error: " + e.toString());
-			}
-		} else {
-			ErrorPage.writeError(stats.getErrorMessage());
-		}
-		ErrorPage.close();
+	}
+
+	private static void calculateRanking(List<Team> teams) throws IOException {
+		List<Team> fullStatTeams = AdjustStats.calculate(teams);
+		Rank.execute(fullStatTeams);
 	}
 
 }

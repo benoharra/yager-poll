@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.commons.lang3.text.WordUtils;
 
@@ -71,7 +72,7 @@ public class Printer {
 	}
 	
 	private String getTeamsPlayed(Team team){
-		ArrayList<String> teams = team.getTeamsPlayed();
+		List<String> teams = team.getTeamsPlayed();
 		String ret = "";
 		for(String played : teams){
 			ret = ret + WordUtils.capitalize(played) + ";";

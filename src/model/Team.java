@@ -1,6 +1,7 @@
 package model;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Team {
 
@@ -10,7 +11,7 @@ public class Team {
 	private int losses;
 	private float winPercentage;
 	private int gamesPlayed;
-	private ArrayList<String> teamsPlayed;
+	private List<String> teamsPlayed;
 	private int winPercentageRank;
 	private float strengthOfScheduleRaw;
 	private int strengthOfScheduleRank;
@@ -49,7 +50,7 @@ public class Team {
 		return gamesPlayed;
 	}
 	
-	public ArrayList<String> getTeamsPlayed(){
+	public List<String> getTeamsPlayed(){
 		return teamsPlayed;
 	}
 	
@@ -113,7 +114,7 @@ public class Team {
 		this.gamesPlayed = gamesPlayed;
 	}
 	
-	public void setTeamsPlayed(ArrayList<String> teamsPlayed){
+	public void setTeamsPlayed(List<String> teamsPlayed){
 		this.teamsPlayed = teamsPlayed;
 	}
 	

@@ -4,16 +4,14 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.TreeMap;
 
 import model.Team;
 
 public class Rank {
 
+	// TODO:Move to config file
 	private static float winPercentMult = 5.55f;
 	private static float sosMult = 2.92f;
 	private static float marginMult = 2.5f;
@@ -23,14 +21,10 @@ public class Rank {
 
 	private static Map<Float, Team> teamScores;
 
-	public static void execute(ArrayList<Team> teams) throws IOException{
+	public static void execute(List<Team> teams) throws IOException{
 		readConfiguration();
 		teamScores = new HashMap<>();
-		for(Team team : teams){
-			float score = winPercentMult*team.getWinPercentageRank() + sosMult*team.getStrengthofScheduleRank() + marginMult*team.getMarginRank() + confMult*team.getConferenceStrength() 
-						  	+ previousRankMult*team.getPreviousRank() + opinionMult*team.getOpinion();
-			teamScores.put(score, team);
-		}
+		teams.forEach(team -> teamScores.put(calculateScore(team), team));
 		teamScores = new TreeMap<Float,Team>(teamScores);
 		Printer printer = new Printer();
 		int rank = 1;
@@ -41,6 +35,11 @@ public class Rank {
 			rank++;
 		}
 		printer.close();
+	}
+
+	private static float calculateScore(Team team) {
+		return winPercentMult*team.getWinPercentageRank() + sosMult*team.getStrengthofScheduleRank() + marginMult*team.getMarginRank() + confMult*team.getConferenceStrength()
+				+ previousRankMult*team.getPreviousRank() + opinionMult*team.getOpinion();
 	}
 	
 	private static void readConfiguration(){
@@ -75,6 +74,6 @@ public class Rank {
 	
 	private static String getValue(String line){
 		int index = line.indexOf("=");
-		return line.substring(index+1, line.length()).trim();
+		return line.substring(index+1).trim();
 	}
 }

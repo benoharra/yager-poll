@@ -2,19 +2,20 @@ package controller;
 
 import java.util.*;
 import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 import model.Team;
 import model.Conference;
 
 public class AdjustStats {
 
-    private static List<Float> winningPercentage = new ArrayList<>();
     private static List<Float> strengthOfSchedule = new ArrayList<>();
     private static List<Float> marginRank = new ArrayList<>();
     private static Map<String, Integer> previousRank = new HashMap<>();
     private static List<Float> sosConferences = new ArrayList<>();
     private static Map<Float, Integer> sosCrankMap = new HashMap<>();
     private static Map<String, Integer> conferenceRank = new HashMap<>();
+
 
     private static Conference pac12 = new Conference();
     private static Conference american = new Conference();
@@ -37,63 +38,79 @@ public class AdjustStats {
     }
 
     private static void setWinPercentage(List<Team> teams) {
-        for (Team team : teams) {
-            float winPercentage = (float) team.getWins() / (float) team.getGamesPlayed();
-            winningPercentage.add(winPercentage);
-            team.setWinPercentage(winPercentage);
-        }
-        Collections.sort(winningPercentage);
-        Collections.reverse(winningPercentage);
-        for (Team team : teams) {
-            int rank = winningPercentage.indexOf(team.getWinPercentage()) + 1;
-            team.setWinPercentageRank(rank);
-        }
-        return;
+        // Calculate the winning percentage for each team
+        teams.forEach(team -> team.setWinPercentage(
+                (float) team.getWins() / team.getGamesPlayed()));
+
+        // Sort the list of all winning percentages from highest to lowest
+        List<Float> winningPercentages = teams.stream()
+                .map(Team::getWinPercentage)
+                .sorted(Comparator.reverseOrder())
+                .collect(Collectors.toList());
+
+        // Assign the winning percentage rank to each team
+        teams.forEach(team ->
+                team.setWinPercentageRank(
+                        winningPercentages.indexOf(team.getWinPercentage()) + 1
+                ));
     }
 
     private static void setStrengthOfSchedule(List<Team> teams) {
-        for (Team team : teams) {
-            previousRank.put(team.getName(), team.getPreviousRank());
-        }
-        for (Team team : teams) {
-            List<String> teamsPlayed = team.getTeamsPlayed();
-            int totalRank = 0;
-            for (String name : teamsPlayed) {
-                if (name.contains("fcs")) {
-                    totalRank = totalRank + Integer.parseInt(name.substring(3, name.length()));
-                } else {
-                    try {
-                        totalRank = totalRank + previousRank.get(name);
-                    } catch (NullPointerException e) {
-                        ErrorPage.writeError("Null Pointer Exception for team: " + name);
-                    }
+        // Create a map of team rankings for building strength of schedule
+        Map<String, Integer> previousWeekRank = teams.stream()
+                .collect(Collectors.toMap(Team::getName, Team::getPreviousRank));
+
+        // Calculate strength of schedule for each team
+        teams.forEach(team -> team.setStrengthOfScheduleRaw(
+                getOpponentsAverageRanking(team, previousWeekRank)));
+
+        // Map all strength of schedules to a list
+        List<Float> strengthOfSchedules = teams.stream()
+                .map(Team::getStrengthOfScheduleRaw)
+                .sorted()
+                .collect(Collectors.toList());
+
+        // Set each team's strength of schedule ranking
+        teams.forEach(team -> team.setStrengthOfScheduleRank(
+                strengthOfSchedules.indexOf(team.getStrengthOfScheduleRaw()) + 1
+        ));
+    }
+
+    private static float getOpponentsAverageRanking(Team team, Map<String, Integer> teamRanks) {
+        int total = 0;
+        // Loop through the opponents for each team and add their ranks
+        for(String opponent : team.getTeamsPlayed()) {
+            if(opponent.contains("fcs")) {
+                total += Integer.parseInt(opponent.substring(3));
+            } else {
+                try {
+                    total += Optional.ofNullable(teamRanks.get(opponent))
+                            .orElseThrow(IllegalArgumentException::new);
+                } catch (IllegalArgumentException e) {
+                    ErrorPage.writeError("Opponent:" + opponent + " not found for " + team.getName());
                 }
             }
-            float sos = (float) totalRank / (float) team.getGamesPlayed();
-            strengthOfSchedule.add(sos);
-            team.setStrengthOfScheduleRaw(sos);
         }
-        Collections.sort(strengthOfSchedule);
-        for (Team team : teams) {
-            int rank = strengthOfSchedule.indexOf(team.getStrengthOfScheduleRaw()) + 1;
-            team.setStrengthOfScheduleRank(rank);
-        }
-        return;
+        // return the average ranking of a teams opponents
+        return (float) total / team.getGamesPlayed();
     }
 
     private static void setMarginRank(List<Team> teams) {
-        for (Team team : teams) {
-            marginRank.add((float) team.getTotalMargin() / (float) team.getGamesPlayed());
-        }
-        Collections.sort(marginRank);
-        Collections.reverse(marginRank);
-        for (Team team : teams) {
-            int rank = marginRank.indexOf((float) team.getTotalMargin() / (float) team.getGamesPlayed()) + 1;
-            team.setMarginRank(rank);
-        }
+        // Create a sorted list of teams' average margin from highest to lowest
+        List<Float> averageMargins = teams.stream()
+                .map(team -> (float) team.getTotalMargin() / team.getGamesPlayed())
+                .sorted(Comparator.reverseOrder())
+                .collect(Collectors.toList());
+
+        // Assign the rank of each team's average margin
+        teams.forEach(team -> team.setMarginRank(
+                averageMargins.indexOf((float) team.getTotalMargin() / team.getGamesPlayed()) + 1
+        ));
     }
 
     private static void setConferenceStrength(List<Team> teams) throws IllegalArgumentException {
+
+
         for (Team team : teams) {
             String conference = team.getConference();
             switch (conference) {

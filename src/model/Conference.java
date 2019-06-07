@@ -14,6 +14,8 @@ public class Conference {
 	private float strength;
 	private List<Float> strengthOfSchedules = new ArrayList<>();
 	private float strengthOfSchedule;
+	private int conferenceRank;
+	private int strengthOfScheduleRank;
 
 	public List<Integer> getRanks() {
 		return ranks;
@@ -39,6 +41,14 @@ public class Conference {
 		return strengthOfSchedule;
 	}
 
+	public int getConferenceRank() {
+		return conferenceRank;
+	}
+
+	public int getStrengthOfScheduleRank() {
+		return strengthOfScheduleRank;
+	}
+
 	public void setRank(int rank) {
 		ranks.add(rank);
 	}
@@ -58,33 +68,42 @@ public class Conference {
 	public void setStrengthOfSchedules(float sos){
 		strengthOfSchedules.add(sos);
 	}
-	
-	public void sort(){
-		Collections.sort(ranks);
+
+	public void setConferenceRank(int conferenceRank) {
+		this.conferenceRank = conferenceRank;
+	}
+
+	public void setStrengthOfScheduleRank(int strengthOfScheduleRank) {
+		this.strengthOfScheduleRank = strengthOfScheduleRank;
 	}
 	
 	public void setConferenceAverages(){
+		// Sort ranks from top to bottom
+		Collections.sort(ranks);
+
 		int bottomCurrent = 0;
-		int total = 0;
-		int length = ranks.size();
-		if(length == 0){
-			ErrorPage.writeError("Missing Conference ranks for a conference");
+		float total = 0;
+		int numberOfTeams = ranks.size();
+		if(numberOfTeams == 0){
+			ErrorPage.writeError("Missing team ranks for conference");
 			return;
 		}
 		float totalSOS = 0;
-		for(int i = 0; i < length; i++){
+		for(int i = 0; i < numberOfTeams; i++){
 			total = total + ranks.get(i);
 			totalSOS = totalSOS + strengthOfSchedules.get(i);
+			// Set the average ranking of top 3 teams
 			if(i == 2){
 				top = total / 3;
-			} else if (i > length - 4){
+			} else if (i > numberOfTeams - 4){
 				bottomCurrent = bottomCurrent + ranks.get(i);
 			}
 		}
-		average = total/length;
-		bottom = bottomCurrent/3;	
+		average = total/numberOfTeams;
+		// Set the average ranking of bottom 3 teams
+		bottom = bottomCurrent/3f;
 		strength = (float) (average*3.25 + top*2.5 + bottom*1.5);
-		strengthOfSchedule = totalSOS/length;
+		strengthOfSchedule = totalSOS/numberOfTeams;
 	}
 
 }

@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
-import java.util.Map.Entry;
 
 import model.Team;
 
@@ -19,27 +18,32 @@ public class Rank {
 	private static float previousRankMult = 3f;
 	private static float opinionMult = 1.5f;
 
-	private static Map<Float, Team> teamScores;
-
-	public static void execute(List<Team> teams) throws IOException{
+	public static void execute(List<Team> teams) throws IOException {
+		// Read the configuration for factor overrides
 		readConfiguration();
-		teamScores = new HashMap<>();
-		teams.forEach(team -> teamScores.put(calculateScore(team), team));
-		teamScores = new TreeMap<Float,Team>(teamScores);
+
+		// Calculate the weighted score for each team and sort by highest rank
+		teams.forEach(team -> team.setWeightedScore(calculateScore(team)));
+		teams.sort(Comparator.comparing(Team::getWeightedScore));
+
 		Printer printer = new Printer();
+
 		int rank = 1;
-		for(Entry<Float, Team> entry : teamScores.entrySet()){
-			Team current = entry.getValue();
-			current.setRank(rank);
-			printer.addLine(current);
+
+		// Assign rankings and output each team to the result file
+		for(Team team : teams) {
+			team.setRank(rank);
+			printer.addLine(team);
 			rank++;
 		}
+
 		printer.close();
 	}
 
 	private static float calculateScore(Team team) {
-		return winPercentMult*team.getWinPercentageRank() + sosMult*team.getStrengthofScheduleRank() + marginMult*team.getMarginRank() + confMult*team.getConferenceStrength()
-				+ previousRankMult*team.getPreviousRank() + opinionMult*team.getOpinion();
+		return winPercentMult * team.getWinPercentageRank() + sosMult * team.getStrengthofScheduleRank() +
+				marginMult * team.getMarginRank() + confMult * team.getConferenceStrength()
+				+ previousRankMult * team.getPreviousRank() + opinionMult * team.getOpinion();
 	}
 	
 	private static void readConfiguration(){

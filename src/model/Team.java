@@ -1,6 +1,5 @@
 package model;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class Team {
@@ -21,10 +20,7 @@ public class Team {
 	private int conferenceStrength;
 	private int previousRank;
 	private int opinion;
-	
-	public Team(){
-		
-	}
+	private float weightedScore;
 	
 	public String getName(){
 		return name;
@@ -89,6 +85,10 @@ public class Team {
 	public int getOpinion(){
 		return opinion;
 	}
+
+	public float getWeightedScore() {
+		return weightedScore;
+	}
 	
 	public void setName(String name){
 		this.name = name.toLowerCase();
@@ -152,5 +152,9 @@ public class Team {
 	
 	public void setOpinion(int opinion){
 		this.opinion = opinion;
+	}
+
+	public void setWeightedScore(float weightedScore) {
+		this.weightedScore = weightedScore;
 	}
 }

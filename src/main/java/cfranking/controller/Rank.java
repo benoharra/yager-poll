@@ -6,24 +6,17 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
 
+import cfranking.model.FactorWeights;
 import cfranking.model.Team;
 
 public class Rank {
 
-	// TODO:Move to config file
-	private static float winPercentMult = 5.55f;
-	private static float sosMult = 2.92f;
-	private static float marginMult = 2.5f;
-	private static float confMult = 0.485f;
-	private static float previousRankMult = 3f;
-	private static float opinionMult = 1.5f;
-
-	public static void execute(List<Team> teams) throws IOException {
+	public static void execute(List<Team> teams, FactorWeights factorWeights) throws IOException {
 		// Read the configuration for factor overrides
-		readConfiguration();
+		readOverrideConfiguration(factorWeights);
 
 		// Calculate the weighted score for each team and sort by highest rank
-		teams.forEach(team -> team.setWeightedScore(calculateScore(team)));
+		teams.forEach(team -> team.setWeightedScore(calculateScore(team, factorWeights)));
 		teams.sort(Comparator.comparing(Team::getWeightedScore));
 
 		Printer printer = new Printer();
@@ -40,40 +33,42 @@ public class Rank {
 		printer.close();
 	}
 
-	private static float calculateScore(Team team) {
-		return winPercentMult * team.getWinPercentageRank() + sosMult * team.getStrengthofScheduleRank() +
-				marginMult * team.getMarginRank() + confMult * team.getConferenceStrength()
-				+ previousRankMult * team.getPreviousRank() + opinionMult * team.getOpinion();
+	private static float calculateScore(Team team, FactorWeights factorWeights) {
+		return factorWeights.getRecord() * team.getWinPercentageRank() +
+				factorWeights.getStrengthOfSchedule() * team.getStrengthofScheduleRank() +
+				factorWeights.getMargin() * team.getMarginRank() +
+				factorWeights.getConferenceStrength() * team.getConferenceStrength() +
+				factorWeights.getPreviousWeekRank() * team.getPreviousRank() +
+				factorWeights.getOpinion() * team.getOpinion();
 	}
 	
-	private static void readConfiguration(){
-		File cfg = new File(ErrorPage.dirHome + "cfg.txt");
-		if(!cfg.exists()){
-			ErrorPage.writeError("Configuration could not be found");
-			return;
-		}
-		try{
-			for(String line : Files.readAllLines(Paths.get(ErrorPage.dirHome + "cfg.txt"))){
-				line = line.toLowerCase();
-				if(line.contains("win")){
-					winPercentMult = Float.parseFloat(getValue(line));
-				}else if(line.contains("schedule")){
-					sosMult = Float.parseFloat(getValue(line));
-				} else if(line.contains("margin")){
-					marginMult = Float.parseFloat(getValue(line));
-				} else if(line.contains("conference")){
-					confMult = Float.parseFloat(getValue(line));
-				} else if(line.contains("previous")){
-					previousRankMult = Float.parseFloat(getValue(line));
-				} else if(line.contains("opinion")){
-					opinionMult = Float.parseFloat(getValue(line));
-				} else {
-					ErrorPage.writeError("Configuration line " + line + " could not be read");
+	private static void readOverrideConfiguration(FactorWeights factorWeights){
+		File cfg = new File(ErrorPage.dirHome + "overrideConfig.txt");
+		if(cfg.exists()){
+			ErrorPage.writeError("Override factors found, make sure you did that on purpose!");
+			try{
+				for(String line : Files.readAllLines(Paths.get(ErrorPage.dirHome + "cfg.txt"))){
+					line = line.toLowerCase();
+					if(line.contains("record")){
+						factorWeights.setRecord(Float.parseFloat(getValue(line)));
+					}else if(line.contains("sos")){
+						factorWeights.setStrengthOfSchedule(Float.parseFloat(getValue(line)));
+					} else if(line.contains("margin")){
+						factorWeights.setMargin(Float.parseFloat(getValue(line)));
+					} else if(line.contains("conference")){
+						factorWeights.setConferenceStrength(Float.parseFloat(getValue(line)));
+					} else if(line.contains("previousRank")){
+						factorWeights.setPreviousWeekRank(Float.parseFloat(getValue(line)));
+					} else if(line.contains("opinion")){
+						factorWeights.setOpinion(Float.parseFloat(getValue(line)));
+					} else {
+						ErrorPage.writeError("Override config line " + line + " could not be read");
+					}
 				}
+			} catch(IOException e){
+				ErrorPage.writeError("Error reading override configuration file: " + e.getMessage());
 			}
-		} catch(IOException e){
-			ErrorPage.writeError("Error reading configuration file: " + e.toString());
-		}	
+		}
 	}
 	
 	private static String getValue(String line){

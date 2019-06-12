@@ -1,5 +1,6 @@
 package cfranking.controller;
 
+import cfranking.model.FactorWeights;
 import cfranking.parser.PreviousWeek;
 import cfranking.parser.CurrentWeek;
 
@@ -12,8 +13,10 @@ import cfranking.model.Team;
 import cfranking.model.TeamResult;
 
 public class StatLoader {
-    List<Team> teams;
-	String errorMessage;
+    private List<Team> teams;
+	private String errorMessage;
+	private FactorWeights factorWeights;
+
 	
 	public StatLoader(){
 		teams = new ArrayList<>();
@@ -23,7 +26,12 @@ public class StatLoader {
 		PreviousWeek baseTeamData = new PreviousWeek();
 		List<Team> baseTeams = baseTeamData.readInput();
 		CurrentWeek weekData = new CurrentWeek();
+		// Read the results for each team and the week number
 		List<TeamResult> results = weekData.readInput();
+
+		// Get the factor weights from the parsed currentWeek input
+		factorWeights = weekData.getFactorWeights();
+		
 		for(Team team : baseTeams){
 			String name = team.getName();
 			ListIterator<TeamResult> it = results.listIterator();
@@ -43,6 +51,10 @@ public class StatLoader {
 			}
 		}
 		return true;
+	}
+
+	public FactorWeights getFactorWeights() {
+		return factorWeights;
 	}
 	
 	private Team addTeamData(Team team, TeamResult result){

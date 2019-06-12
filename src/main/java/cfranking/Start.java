@@ -7,6 +7,7 @@ import cfranking.controller.AdjustStats;
 import cfranking.controller.ErrorPage;
 import cfranking.controller.Rank;
 import cfranking.controller.StatLoader;
+import cfranking.model.FactorWeights;
 import cfranking.model.Team;
 
 public class Start {
@@ -15,7 +16,7 @@ public class Start {
 		StatLoader stats = new StatLoader();
 		try {
 			if(stats.load()) {
-				calculateRanking(stats.getTeams());
+				calculateRanking(stats.getTeams(), stats.getFactorWeights());
 			} else {
 				// Adjust this to be in catch block
 				ErrorPage.writeError(stats.getErrorMessage());
@@ -28,9 +29,9 @@ public class Start {
 		}
 	}
 
-	private static void calculateRanking(List<Team> teams) throws IOException {
+	private static void calculateRanking(List<Team> teams, FactorWeights factorWeights) throws IOException {
 		List<Team> fullStatTeams = AdjustStats.calculate(teams);
-		Rank.execute(fullStatTeams);
+		Rank.execute(fullStatTeams, factorWeights);
 	}
 
 }

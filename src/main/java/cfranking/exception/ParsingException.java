@@ -1,4 +1,4 @@
-package exception;
+package cfranking.exception;
 
 /**
  * Created by ospre on 8/15/2018.

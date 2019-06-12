@@ -1,15 +1,11 @@
-package controller;
+package cfranking.controller;
 
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
-import org.apache.commons.lang3.text.WordUtils;
-
-import model.Team;
+import cfranking.model.Team;
 
 public class Printer {
 	
@@ -54,9 +50,9 @@ public class Printer {
 	public void addLine(Team team){
 		String line = "";
 		String data = "";
-		line = line + team.getRank() + ".     " + WordUtils.capitalize(team.getName());
-		data = data + team.getRank() + "," + WordUtils.capitalize(team.getName()) + "," + team.getWins() + "," + team.getLosses() + "," + 
-				WordUtils.capitalize(team.getConference()) + "," + team.getTotalMargin() + "," + getTeamsPlayed(team) + "," + team.getOpinion() + "," + team.getWinPercentage() + "," +
+		line = line + team.getRank() + ".     " + team.getName().toUpperCase();
+		data = data + team.getRank() + "," + team.getName().toUpperCase() + "," + team.getWins() + "," + team.getLosses() + "," +
+				team.getConference().toUpperCase() + "," + team.getTotalMargin() + "," + getTeamsPlayed(team) + "," + team.getOpinion() + "," + team.getWinPercentage() + "," +
 				team.getWinPercentageRank() + "," + team.getStrengthofScheduleRank() + "," + team.getStrengthOfScheduleRaw() + "," + team.getMarginRank() + "," + 
 				team.getConferenceStrength() + "," + team.getPreviousRank();
 		try {
@@ -72,12 +68,7 @@ public class Printer {
 	}
 	
 	private String getTeamsPlayed(Team team){
-		List<String> teams = team.getTeamsPlayed();
-		String ret = "";
-		for(String played : teams){
-			ret = ret + WordUtils.capitalize(played) + ";";
-		}
-		return ret.substring(0,(ret.length()-1));
+		return String.join(";", team.getTeamsPlayed()).toUpperCase();
 	}
 	
 	public void close(){

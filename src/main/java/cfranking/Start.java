@@ -1,10 +1,13 @@
-package controller;
+package cfranking;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
-import model.Team;
+import cfranking.controller.AdjustStats;
+import cfranking.controller.ErrorPage;
+import cfranking.controller.Rank;
+import cfranking.controller.StatLoader;
+import cfranking.model.Team;
 
 public class Start {
 

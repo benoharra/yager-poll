@@ -1,10 +1,10 @@
-package model;
+package cfranking.model;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import controller.ErrorPage;
+import cfranking.controller.ErrorPage;
 
 public class Conference {
 	private List<Integer> ranks = new ArrayList<>();

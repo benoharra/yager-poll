@@ -1,4 +1,4 @@
-package model;
+package cfranking.model;
 
 public class TeamResult {
 	

@@ -1,4 +1,4 @@
-package model;
+package cfranking.model;
 
 import java.util.List;
 

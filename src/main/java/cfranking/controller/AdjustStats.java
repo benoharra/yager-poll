@@ -1,11 +1,10 @@
-package controller;
+package cfranking.controller;
 
 import java.util.*;
-import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
-import model.Team;
-import model.Conference;
+import cfranking.model.Team;
+import cfranking.model.Conference;
 
 public class AdjustStats {
 

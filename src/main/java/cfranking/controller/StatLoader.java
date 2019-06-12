@@ -1,15 +1,15 @@
-package controller;
+package cfranking.controller;
 
-import parser.PreviousWeek;
-import parser.CurrentWeek;
+import cfranking.parser.PreviousWeek;
+import cfranking.parser.CurrentWeek;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
 
-import model.Team;
-import model.TeamResult;
+import cfranking.model.Team;
+import cfranking.model.TeamResult;
 
 public class StatLoader {
     List<Team> teams;

@@ -1,7 +1,7 @@
-package controller;
+package cfranking.controller;
 
-import model.Conference;
-import model.Team;
+import cfranking.model.Conference;
+import cfranking.model.Team;
 
 import java.util.HashMap;
 import java.util.List;

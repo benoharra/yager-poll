@@ -1,4 +1,4 @@
-package parser;
+package cfranking.parser;
 
 import java.io.File;
 import java.io.IOException;
@@ -10,8 +10,8 @@ import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
 
-import controller.ErrorPage;
-import model.Team;
+import cfranking.controller.ErrorPage;
+import cfranking.model.Team;
 
 public class PreviousWeek {
 
@@ -42,7 +42,7 @@ public class PreviousWeek {
 				count++;
 			}
 		} catch (IOException e) {
-			ErrorPage.writeError("Previous week input failed with exception: " + e.toString());
+			ErrorPage.writeError("Previous week input failed with cfranking.exception: " + e.toString());
 		}
 		return teams;
 	}

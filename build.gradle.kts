@@ -25,11 +25,16 @@ dependencies {
     // This dependency is found on compile classpath of this component and consumers.
     implementation("com.google.guava:guava:26.0-jre")
 
-    implementation("org.apache.commons:commons-csv:1.6")
+    compile("org.apache.commons:commons-csv:1.6")
 }
 
 tasks.jar {
     manifest {
         attributes["Main-Class"] = "cfranking.Start"
     }
+
+    dependsOn(configurations.runtimeClasspath)
+    from({
+        configurations.runtimeClasspath.get().filter { it.name.endsWith("jar") }.map { zipTree(it) }
+    })
 }

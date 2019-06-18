@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
+import cfranking.config.ErrorPage;
 import cfranking.model.Team;
 
 public class Printer {

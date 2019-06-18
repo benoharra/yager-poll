@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import cfranking.controller.ErrorPage;
+import cfranking.config.ErrorPage;
 
 public class Conference {
 	private List<Integer> ranks = new ArrayList<>();

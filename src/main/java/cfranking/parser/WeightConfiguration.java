@@ -1,6 +1,6 @@
 package cfranking.parser;
 
-import cfranking.controller.ErrorPage;
+import cfranking.config.ErrorPage;
 import cfranking.model.FactorWeights;
 
 import java.io.IOException;

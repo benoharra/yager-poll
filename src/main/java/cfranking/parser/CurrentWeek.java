@@ -6,22 +6,21 @@ import java.nio.charset.Charset;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import cfranking.config.ConfigProps;
 import cfranking.model.FactorWeights;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
 
-import cfranking.controller.ErrorPage;
+import cfranking.config.ErrorPage;
 import cfranking.model.TeamResult;
 
 public class CurrentWeek {
-	
-	private String filePath = ErrorPage.dirHome + "CurrentWeek.csv";
 
 	private FactorWeights factorWeights;
 
 	public List<TeamResult> readInput() throws IOException {
-		File file = new File(filePath);
+		File file = new File(ConfigProps.CURRENT_WEEK_FILE);
 		try {
 			CSVParser parser = CSVParser.parse(file, Charset.defaultCharset(), CSVFormat.EXCEL);
 			List<CSVRecord> records = parser.getRecords();

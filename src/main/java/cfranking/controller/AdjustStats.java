@@ -3,6 +3,7 @@ package cfranking.controller;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import cfranking.config.ErrorPage;
 import cfranking.model.Team;
 import cfranking.model.Conference;
 

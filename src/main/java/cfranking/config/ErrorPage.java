@@ -1,4 +1,6 @@
-package cfranking.controller;
+package cfranking.config;
+
+import cfranking.config.ConfigProps;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -10,23 +12,12 @@ public class ErrorPage {
 	private static FileWriter fw_error;
 	private static File file_error;
 	private static BufferedWriter bw_error;
-	
-	public static String dirHome;
-	public static boolean connor = true;
-	
-	static{
-		if(connor){
-			dirHome = "C:\\Users\\Connor Yager\\Documents\\Rankings\\Data\\";
-		} else {
-			dirHome = "C:\\Users\\ospre\\Rankings\\";
-		}
-	}
-	
+
 	
 	public static void writeError(String error){
 		try{
 			if(file_error == null){
-				file_error = new File(dirHome + "Errors.txt");
+				file_error = new File(ConfigProps.OUTPUT_DIRECTORY + "Errors.txt");
 				file_error.createNewFile();
 				fw_error = new FileWriter(file_error.getAbsoluteFile());
 				bw_error = new BufferedWriter(fw_error);
@@ -39,11 +30,10 @@ public class ErrorPage {
 	}
 	
 	public static void close(){
-		if(!bw_error.equals(null)){
+		if(bw_error != null){
 			try {
 				bw_error.close();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}

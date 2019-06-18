@@ -6,19 +6,18 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
+import cfranking.config.ConfigProps;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
 
-import cfranking.controller.ErrorPage;
+import cfranking.config.ErrorPage;
 import cfranking.model.Team;
 
 public class PreviousWeek {
 
-	private String filePath = ErrorPage.dirHome + "PreviousWeek.csv";
-
 	public List<Team> readInput(){
-		File file = new File(filePath);
+		File file = new File(ConfigProps.PREVIOUS_WEEK_FILE);
 		ArrayList<Team> teams = new ArrayList<>();
 		try {
 			CSVParser parser = CSVParser.parse(file, Charset.defaultCharset(), CSVFormat.EXCEL);

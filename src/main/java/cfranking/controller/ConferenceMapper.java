@@ -1,5 +1,6 @@
 package cfranking.controller;
 
+import cfranking.config.ErrorPage;
 import cfranking.model.Conference;
 import cfranking.model.Team;
 

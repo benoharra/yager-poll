@@ -1,5 +1,6 @@
 package cfranking.controller;
 
+import cfranking.config.ErrorPage;
 import cfranking.model.FactorWeights;
 import cfranking.parser.PreviousWeek;
 import cfranking.parser.CurrentWeek;
@@ -8,13 +9,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Map;
 
 import cfranking.model.Team;
 import cfranking.model.TeamResult;
 
 public class StatLoader {
     private List<Team> teams;
-	private String errorMessage;
 	private FactorWeights factorWeights;
 
 	
@@ -27,37 +28,30 @@ public class StatLoader {
 		List<Team> baseTeams = baseTeamData.readInput();
 		CurrentWeek weekData = new CurrentWeek();
 		// Read the results for each team and the week number
-		List<TeamResult> results = weekData.readInput();
+		Map<String, TeamResult> results = weekData.readInput();
 
 		// Get the factor weights from the parsed currentWeek input
 		factorWeights = weekData.getFactorWeights();
-		
-		for(Team team : baseTeams){
-			String name = team.getName();
-			ListIterator<TeamResult> it = results.listIterator();
-			Team finalTeam = null;
-			while(it.hasNext() && finalTeam == null){
-				TeamResult result = it.next();
-				if(result.getName().equals(name)){
-					finalTeam = addTeamData(team,result);
-					results.remove(it.nextIndex() - 1);
-				}
-			}
-			if(finalTeam == null){
-				errorMessage = "Results could not be found for: " + name;
-				return false;
+
+		boolean successfullyLoadedAllTeams = true;
+		for(Team team : baseTeams) {
+			TeamResult result = results.get(team.getName());
+			if(result != null) {
+				teams.add(buildTeamData(team, result));
 			} else {
-				teams.add(finalTeam);
+				ErrorPage.writeError("Results could not be found for:" + team.getName());
+				successfullyLoadedAllTeams = false;
 			}
 		}
-		return true;
+
+		return successfullyLoadedAllTeams;
 	}
 
 	public FactorWeights getFactorWeights() {
 		return factorWeights;
 	}
 	
-	private Team addTeamData(Team team, TeamResult result){
+	private Team buildTeamData(Team team, TeamResult result){
 		List<String> opponents = team.getTeamsPlayed();
 		String teamPlayed = result.getOpponent();
 		if(teamPlayed != null){
@@ -85,10 +79,6 @@ public class StatLoader {
 	
 	public List<Team> getTeams(){
 		return this.teams;
-	}
-	
-	public String getErrorMessage(){
-		return errorMessage;
 	}
 	
 }

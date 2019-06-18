@@ -17,11 +17,7 @@ public class Start {
 		try {
 			if(stats.load()) {
 				calculateRanking(stats.getTeams(), stats.getFactorWeights());
-			} else {
-				// Adjust this to be in catch block
-				ErrorPage.writeError(stats.getErrorMessage());
 			}
-
 		} catch (IllegalArgumentException | IOException e) {
 			ErrorPage.writeError("Calculation Error: " + e.toString());
 		} finally {

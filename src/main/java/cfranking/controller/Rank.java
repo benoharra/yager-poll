@@ -6,6 +6,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
 
+import cfranking.config.ConfigProps;
 import cfranking.config.ErrorPage;
 import cfranking.model.FactorWeights;
 import cfranking.model.Team;
@@ -44,11 +45,11 @@ public class Rank {
 	}
 	
 	private static void readOverrideConfiguration(FactorWeights factorWeights){
-		File cfg = new File(ErrorPage.dirHome + "overrideConfig.txt");
+		File cfg = new File(ConfigProps.OVERRIDE_FILE);
 		if(cfg.exists()){
 			ErrorPage.writeError("Override factors found, make sure you did that on purpose!");
 			try{
-				for(String line : Files.readAllLines(Paths.get(ErrorPage.dirHome + "cfg.txt"))){
+				for(String line : Files.readAllLines(Paths.get(ConfigProps.OVERRIDE_FILE))){
 					line = line.toLowerCase();
 					if(line.contains("record")){
 						factorWeights.setRecord(Float.parseFloat(getValue(line)));

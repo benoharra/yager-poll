@@ -1,7 +1,5 @@
 package cfranking.config;
 
-import cfranking.config.ConfigProps;
-
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -17,7 +15,7 @@ public class ErrorPage {
 	public static void writeError(String error){
 		try{
 			if(file_error == null){
-				file_error = new File(ConfigProps.OUTPUT_DIRECTORY + "Errors.txt");
+				file_error = new File(ConfigProps.ERROR_FILE);
 				file_error.createNewFile();
 				fw_error = new FileWriter(file_error.getAbsoluteFile());
 				bw_error = new BufferedWriter(fw_error);

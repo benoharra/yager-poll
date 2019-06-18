@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
+import cfranking.config.ConfigProps;
 import cfranking.config.ErrorPage;
 import cfranking.model.Team;
 
@@ -20,8 +21,8 @@ public class Printer {
 	File data;
 	
 	public Printer() throws IOException{
-		rank = new File("C:\\Users\\ospre\\Rankings\\Ranks.txt");
-		data = new File("C:\\Users\\ospre\\Rankings\\Full Data.csv");
+		rank = new File(ConfigProps.RANKING_FILE);
+		data = new File(ConfigProps.FULL_DATA_FILE);
 		
 		rank.createNewFile();
 		data.createNewFile();

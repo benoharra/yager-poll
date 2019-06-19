@@ -12,6 +12,8 @@ plugins {
 
     // Apply intellij support
     idea
+
+    id("edu.sc.seis.macAppBundle") version "2.3.0"
 }
 
 repositories {
@@ -25,7 +27,8 @@ dependencies {
     // This dependency is found on compile classpath of this component and consumers.
     implementation("com.google.guava:guava:26.0-jre")
 
-    compile("org.apache.commons:commons-csv:1.6")
+    implementation("org.apache.commons:commons-csv:1.6")
+
 }
 
 tasks.jar {
@@ -37,4 +40,9 @@ tasks.jar {
     from({
         configurations.runtimeClasspath.get().filter { it.name.endsWith("jar") }.map { zipTree(it) }
     })
+}
+
+macAppBundle {
+    mainClassName = "cfRanking.Start"
+    icon = "helmeticon_128x128.icns"
 }

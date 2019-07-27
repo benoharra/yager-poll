@@ -112,7 +112,7 @@ public class AdjustStats {
         if(teamConferenceRank == 1) {
             team.setConferenceStrength(1);
         } else {
-            team.setConferenceStrength(teamConferenceRank * CONFERENCE_RANK_MULTIPLIER);
+            team.setConferenceStrength((teamConferenceRank - 1) * CONFERENCE_RANK_MULTIPLIER);
         }
     }
 

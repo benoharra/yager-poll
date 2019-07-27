@@ -8,11 +8,12 @@ import cfranking.parser.CurrentWeek;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Map;
+
 
 import cfranking.model.Team;
 import cfranking.model.TeamResult;
+import org.apache.commons.lang3.StringUtils;
 
 public class StatLoader {
     private List<Team> teams;
@@ -54,8 +55,8 @@ public class StatLoader {
 	private Team buildTeamData(Team team, TeamResult result){
 		List<String> opponents = team.getTeamsPlayed();
 		String teamPlayed = result.getOpponent();
-		if(teamPlayed != null){
-			opponents.add(result.getOpponent());
+		if(StringUtils.isNotEmpty(teamPlayed)){
+			opponents.add(teamPlayed);
 
 		}
 		team.setTeamsPlayed(opponents);

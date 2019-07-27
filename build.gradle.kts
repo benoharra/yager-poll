@@ -25,6 +25,7 @@ dependencies {
     // This dependency is found on compile classpath of this component and consumers.
     implementation("com.google.guava:guava:26.0-jre")
 
+    compile("org.apache.commons:commons-lang3:3.0")
     compile("org.apache.commons:commons-csv:1.6")
 }
 

@@ -56,8 +56,7 @@ public class StatLoader {
 		List<String> opponents = team.getTeamsPlayed();
 		String teamPlayed = result.getOpponent();
 		if(StringUtils.isNotEmpty(teamPlayed)){
-			opponents.add(teamPlayed);
-
+			opponents.add(teamPlayed.toLowerCase());
 		}
 		team.setTeamsPlayed(opponents);
 		
@@ -65,10 +64,10 @@ public class StatLoader {
 		team.setTotalMargin(totalMargin + result.getMargin());
 		
 		String gameResult = result.getResult();
-		if(gameResult.equals("w")){
+		if(gameResult.equalsIgnoreCase("w")){
 			int wins = team.getWins() + 1;
 			team.setWins(wins);
-		} else if (gameResult.equals("l")){
+		} else if (gameResult.equalsIgnoreCase("l")){
 			int losses = team.getLosses() + 1;
 			team.setLosses(losses);
 		}

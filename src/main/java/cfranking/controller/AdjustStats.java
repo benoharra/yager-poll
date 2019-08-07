@@ -24,7 +24,9 @@ public class AdjustStats {
     private static void setWinPercentage(List<Team> teams) {
         // Calculate the winning percentage for each team
         teams.forEach(team -> team.setWinPercentage(
-                (float) team.getWins() / team.getGamesPlayed()));
+                team.getGamesPlayed() > 0 ?
+                        (float) team.getWins() / team.getGamesPlayed()
+                        : 0));
 
         // Sort the list of all winning percentages from highest to lowest
         List<Float> winningPercentages = teams.stream()

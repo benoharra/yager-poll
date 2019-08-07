@@ -55,11 +55,11 @@ public class PreviousWeek {
 	private List<String> getTeamsPlayed(String teamList){
 		ArrayList<String> teams = new ArrayList<>();
 		while(teamList.contains(";")){
-			String team = teamList.substring(0,teamList.indexOf(";")).toLowerCase();
+			String team = teamList.substring(0,teamList.indexOf(";")).toUpperCase();
 			teams.add(team);
 			teamList = teamList.substring(teamList.indexOf(";") + 1);
 		}
-		teams.add(teamList.toLowerCase());
+		teams.add(teamList.toUpperCase());
 		return teams;
 	}
 }

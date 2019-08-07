@@ -16,6 +16,7 @@ import org.apache.commons.csv.CSVRecord;
 
 import cfranking.config.ErrorPage;
 import cfranking.model.TeamResult;
+import org.apache.commons.lang3.StringUtils;
 
 public class CurrentWeek {
 
@@ -51,12 +52,12 @@ public class CurrentWeek {
 	private static Map.Entry<String, TeamResult> buildResult(CSVRecord record) {
 		String result = record.get(1);
 		// Return an entry mapped team name -> result
-		return new AbstractMap.SimpleEntry<>(record.get(0).toLowerCase(),
+		return new AbstractMap.SimpleEntry<>(StringUtils.upperCase(record.get(0)),
 				new TeamResult(
-					record.get(0),
-					result,
-					calculateMargin(result, record.get(2)),
-					record.get(3)));
+						StringUtils.upperCase(record.get(0)),
+						result,
+						calculateMargin(result, record.get(2)),
+						record.get(3)));
 	}
 
 	private static int calculateMargin(String gameResult, String margin) {

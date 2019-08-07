@@ -35,7 +35,7 @@ public class TeamResult {
 	}
 	
 	public void setResult(String result){
-		this.result = result.toLowerCase();
+		this.result = result;
 	}
 	
 	public void setMargin(int margin){

@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import cfranking.config.ErrorPage;
 import cfranking.model.Team;
 import cfranking.model.Conference;
+import org.apache.commons.lang3.StringUtils;
 
 public class AdjustStats {
 
@@ -41,7 +42,9 @@ public class AdjustStats {
     private static void setStrengthOfSchedule(List<Team> teams) {
         // Create a map of team rankings for building strength of schedule
         Map<String, Integer> previousWeekRank = teams.stream()
-                .collect(Collectors.toMap(Team::getName, Team::getPreviousRank));
+                .collect(Collectors.toMap(
+                        team -> team.getName().toUpperCase(),
+                        Team::getPreviousRank));
 
         // Calculate strength of schedule for each team
         teams.forEach(team -> team.setStrengthOfScheduleRaw(
@@ -62,21 +65,23 @@ public class AdjustStats {
     private static float getOpponentsAverageRanking(Team team, Map<String, Integer> teamRanks) {
         int total = 0;
         // Loop through the opponents for each team and add their ranks
-        for(String opponent : team.getTeamsPlayed()) {
-            if(opponent.contains("fcs")) {
-                total += Integer.parseInt(opponent.substring(3));
-            } else {
-                try {
+        for (String opponent : team.getTeamsPlayed()) {
+            try {
+                if (opponent.contains("FCS")) {
+                    total += Integer.parseInt(opponent.substring(3));
+                } else {
                     total += Optional.ofNullable(teamRanks.get(opponent))
                             .orElseThrow(IllegalArgumentException::new);
-                } catch (IllegalArgumentException e) {
-                    ErrorPage.writeError("Opponent:" + opponent + " not found for " + team.getName());
                 }
+            } catch (NumberFormatException e) {
+                ErrorPage.writeError("Opponent:" + opponent + " not correctly formatted for FCS team");
+            } catch (IllegalArgumentException e) {
+                ErrorPage.writeError("Opponent:" + opponent + " not found for " + team.getName());
             }
         }
-        // return the average ranking of a teams opponents
-        return (float) total / team.getGamesPlayed();
-    }
+    // return the average ranking of a teams opponents
+        return(float)total /team.getGamesPlayed();
+}
 
     private static void setMarginRank(List<Team> teams) {
         // Create a sorted list of teams' average margin from highest to lowest
@@ -99,17 +104,18 @@ public class AdjustStats {
 
         // Assign each team's conference ranking
         teams.forEach(team -> {
-            if(!team.getConference().equals(ConferenceMapper.INDEPENDENT)) {
-                setTeamConferenceRankings(team, conferences);
-            } else {
-                setIndependentTeamStrength(team, conferences.values());
-            }}
+                    if (!team.getConference().equalsIgnoreCase(ConferenceMapper.INDEPENDENT)) {
+                        setTeamConferenceRankings(team, conferences);
+                    } else {
+                        setIndependentTeamStrength(team, conferences.values());
+                    }
+                }
         );
     }
 
     private static void setTeamConferenceRankings(Team team, Map<String, Conference> conferences) {
         int teamConferenceRank = conferences.get(team.getConference()).getConferenceRank();
-        if(teamConferenceRank == 1) {
+        if (teamConferenceRank == 1) {
             team.setConferenceStrength(1);
         } else {
             team.setConferenceStrength((teamConferenceRank - 1) * CONFERENCE_RANK_MULTIPLIER);
@@ -121,18 +127,18 @@ public class AdjustStats {
                 .sorted(Comparator.comparing(Conference::getStrengthOfScheduleRank))
                 .collect(Collectors.toList());
 
-        for(int i = 0; i < conferences.size(); i++) {
+        for (int i = 0; i < conferences.size(); i++) {
             // Find the first conference where the team's average opponent rank is less than the conference average opp weight
-            if(team.getStrengthOfScheduleRaw() < conferencesSortedByStrengthOfSchedule.get(i).getStrengthOfSchedules()) {
+            if (team.getStrengthOfScheduleRaw() < conferencesSortedByStrengthOfSchedule.get(i).getStrengthOfSchedules()) {
                 // Return the whichever conference has the closest opponent rank to the team being analyzed
-                if(i == 0) {
+                if (i == 0) {
                     // Independent team has a stronger schedule than the average for any conference
                     team.setConferenceStrength(1);
-                } else if(isStrengthClosestToHigherConference(conferencesSortedByStrengthOfSchedule.get(i-1),
-                                                              conferencesSortedByStrengthOfSchedule.get(i),
-                                                              team)) {
+                } else if (isStrengthClosestToHigherConference(conferencesSortedByStrengthOfSchedule.get(i - 1),
+                        conferencesSortedByStrengthOfSchedule.get(i),
+                        team)) {
                     // If the team's strength is closer to the conference ranked just above, return the previous conference rank
-                    team.setConferenceStrength(conferencesSortedByStrengthOfSchedule.get(i-1).getConferenceRank() * CONFERENCE_RANK_MULTIPLIER);
+                    team.setConferenceStrength(conferencesSortedByStrengthOfSchedule.get(i - 1).getConferenceRank() * CONFERENCE_RANK_MULTIPLIER);
                 } else {
                     team.setConferenceStrength(conferencesSortedByStrengthOfSchedule.get(i).getConferenceRank() * CONFERENCE_RANK_MULTIPLIER);
                 }

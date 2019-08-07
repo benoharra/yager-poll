@@ -56,7 +56,7 @@ public class StatLoader {
 		List<String> opponents = team.getTeamsPlayed();
 		String teamPlayed = result.getOpponent();
 		if(StringUtils.isNotEmpty(teamPlayed)){
-			opponents.add(teamPlayed.toLowerCase());
+			opponents.add(teamPlayed.toUpperCase());
 		}
 		team.setTeamsPlayed(opponents);
 		

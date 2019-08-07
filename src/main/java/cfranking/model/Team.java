@@ -91,7 +91,7 @@ public class Team {
 	}
 	
 	public void setName(String name){
-		this.name = name.toLowerCase();
+		this.name = name.toUpperCase();
 	}
 	
 	public void setRank(int rank){

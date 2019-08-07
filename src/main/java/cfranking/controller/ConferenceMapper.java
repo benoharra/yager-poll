@@ -59,7 +59,7 @@ public class ConferenceMapper {
     }
 
     private void addTeamToConference(Team team) {
-        String teamConference = team.getConference();
+        String teamConference = team.getConference().toLowerCase();
         // If a team's conference is found, add their stats to the conference
         if(conferences.containsKey(teamConference)) {
             setTeamIntoConference(team, conferences.get(teamConference));

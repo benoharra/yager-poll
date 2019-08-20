@@ -59,7 +59,7 @@ public class Rank {
 						factorWeights.setMargin(Float.parseFloat(getValue(line)));
 					} else if(line.contains("conference")){
 						factorWeights.setConferenceStrength(Float.parseFloat(getValue(line)));
-					} else if(line.contains("previousRank")){
+					} else if(line.contains("previousrank")){
 						factorWeights.setPreviousWeekRank(Float.parseFloat(getValue(line)));
 					} else if(line.contains("opinion")){
 						factorWeights.setOpinion(Float.parseFloat(getValue(line)));

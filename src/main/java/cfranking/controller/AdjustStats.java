@@ -148,6 +148,8 @@ public class AdjustStats {
             }
         }
 
+        // If the team's strength of schedule was less than all conferences set them to the lowest conference
+        team.setConferenceStrength(conferencesSortedByStrengthOfSchedule.get(conferences.size() - 1).getConferenceRank() * CONFERENCE_RANK_MULTIPLIER);
     }
 
     private static boolean isStrengthClosestToHigherConference(Conference higherRankedConference,

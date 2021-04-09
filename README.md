@@ -9,6 +9,10 @@ Teams are analyzed based on the following factors:
 - Previous week rank
 - Ranking author's opinion
 
+## Source code
+- Java: Main implementation, see Gradle build instructions below
+- Golang: Not operational re-write for side-by-side comparison as I was learning GoLang
+
 ## Running the App
 - Ensure Java is installed on your computer
 - Download the YagerPoll.jar wherever you would like to keep it
